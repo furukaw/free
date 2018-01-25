@@ -116,7 +116,7 @@ let rec g expr = match expr with
   | Syntax.LetRec (p1, l2, e3, e4) -> LetRec (p1, l2, g e3, g e4)
   | Syntax.Application (Syntax.Variable (name), args) ->
     let rec gapp tlist slist = match tlist with
-        [] -> Application (name, slist)
+        [] -> Application (name, List.rev slist)
       | tfirst :: trest ->
         let v = Gensym.f "app" in
         Let ((v, Type.gen_type ()), g tfirst,
