@@ -1,0 +1,31 @@
+
+let names = List.map Gensym.f args
+ですべてに新しい名前をつけられる
+（実行効率良くはない）
+
+let rec gcd2 m n =
+    let zero = 0 in
+    if n = zero then m
+	else let amari = m mod n
+	     in gcd2 n amari
+
+関数呼び出し規約
+・関数は何度もあちこちから呼び出される
+・呼び出すやつによってレジスタの使い方が違うと困る
+（引数が格納されている位置が毎回同じでないと）
+
+
+let rec gcd2 R1 R2 =
+    let m = R1 in
+    let n = R2 in
+    let zero = 0 in
+    if n = zero then m
+       	   	else let amari = m mod n in
+		     let R1 = n in
+		     let R2 = amari in
+		     gcd2 R1 R2
+
+高階関数を扱うのがきつすぎるので、できあがった関数を用意しました（first.ml）
+
+Intelのレジスタの名前がアレなのは歴史的経緯
+先生の家にNEC PC-8001があったらしい
