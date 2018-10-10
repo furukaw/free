@@ -1,6 +1,7 @@
 <html>
 
 <head>
+  <meta charset="utf-8"/>
   <style type="text/css">
     < !-- body {
       font-size: 18px;
@@ -12,10 +13,15 @@
       font-size: 18px;
     }
 
+    label, input[type='checkbox'] {
+      cursor: pointer;
+    }
+
     button {
       width: 80px;
       font-size: 18px;
-    }
+      cursor: pointer;
+   }
 
     textarea {
       margin-top: 12px;
@@ -37,6 +43,8 @@
       ["金", "きん", "Fri", "fri", "kin"],
       ["土", "ど", "Sat", "sat", "do"],
       ["日", "にち", "Sun", "sun", "nichi", "niti"]];
+    const dayIds = ["monday", "tuesday", "wednesday", "thursday", "friday",
+    "saturday", "sunday"];
 
     function getDay(input) {
       let result = null;
@@ -46,36 +54,51 @@
       return result;
     }
 
-    function make(day) {
-      const firstDay = days.findIndex(d => d === day);
+    function make(day1, schedules, blank) {
+      const firstDay = days.findIndex(d => d === day1);
       let i;
       let result = "";
       for (i = 1; i <= 31; i++) {
-        result = result + i + "(" + days[(firstDay + i - 1) % 7] + ")\n";
+        let day = (firstDay + i - 1) % 7;
+        result = result + i + "(" + days[day] + ") "
+		       + schedules[day] + "\n";
+        if (day === 6 && blank)
+          result = result + "\n";
       }
       return result;
     }
 
+    function getSchedules() {
+      return dayIds.map(id => document.getElementById(id).value);
+    }
+
     function go() {
       const inputDayElement = document.getElementById("day");
-      console.log(inputDayElement);
       const inputDay = inputDayElement.value;
-      console.log(inputDay);
       const day = getDay(inputDay);
-      console.log(day);
       if (!day) return;
-      const result = make(day);
-      console.log(day)
+      const schedules = getSchedules();
+      const blank = document.getElementById("week").value === "yes";
+      const result = make(day, schedules, blank);
       const element = document.getElementById("result");
-      console.log(element);
       element.value = result;
     }
   </script>
 
-  <input type="text" placeholder="１日の曜日" id="day">
-  <button type="button" onclick="go()">生成</button>
-  <br>
-  <textarea name="area" rows="36" cols="27" id="result"></textarea>
+  １日の曜日 <input type="text" size="7" id="day" autofocus="focus">
+  <button type="button" onclick="go()">生成</button><br/>
+  <label for="week">
+  <input type="checkbox" id="week" value="yes">日曜日と月曜日の間に空行を入れる
+  </label>
+  <br />
+  月 <input type="text" placeholder="月曜の予定" id="monday"><br />
+  火 <input type="text" placeholder="火曜の予定" id="tuesday"><br />
+  水 <input type="text" placeholder="水曜の予定" id="wednesday"><br />
+  木 <input type="text" placeholder="木曜の予定" id="thursday"><br />
+  金 <input type="text" placeholder="金曜の予定" id="friday"><br />
+  土 <input type="text" placeholder="土曜の予定" id="saturday"><br />
+  日 <input type="text" placeholder="日曜の予定" id="sunday"><br />
+  <textarea name="area" rows="36" cols="35" id="result"></textarea>
 </body>
 
 </html>
