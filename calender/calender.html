@@ -1,0 +1,81 @@
+<html>
+
+<head>
+  <style type="text/css">
+    < !-- body {
+      font-size: 18px;
+    }
+
+    input {
+      border-color: #333333;
+      border-width: 1px;
+      font-size: 18px;
+    }
+
+    button {
+      width: 80px;
+      font-size: 18px;
+    }
+
+    textarea {
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    -->
+  </style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    const days = ["月", "火", "水", "木", "金", "土", "日"];
+    const dayStrings = [
+      ["月", "げつ", "Mon", "mon", "getsu", "getu"],
+      ["火", "か", "Tue", "tue", "ka"],
+      ["水", "すい", "Wed", "wed", "sui"],
+      ["木", "もく", "Thu", "thu", "moku"],
+      ["金", "きん", "Fri", "fri", "kin"],
+      ["土", "ど", "Sat", "sat", "do"],
+      ["日", "にち", "Sun", "sun", "nichi", "niti"]];
+
+    function getDay(input) {
+      let result = null;
+      dayStrings.forEach(strings => {
+        if (strings.findIndex(d => input.startsWith(d)) >= 0) result = strings[0];
+      });
+      return result;
+    }
+
+    function make(day) {
+      const firstDay = days.findIndex(d => d === day);
+      let i;
+      let result = "";
+      for (i = 1; i <= 31; i++) {
+        result = result + i + "(" + days[(firstDay + i - 1) % 7] + ")\n";
+      }
+      return result;
+    }
+
+    function go() {
+      const inputDayElement = document.getElementById("day");
+      console.log(inputDayElement);
+      const inputDay = inputDayElement.value;
+      console.log(inputDay);
+      const day = getDay(inputDay);
+      console.log(day);
+      if (!day) return;
+      const result = make(day);
+      console.log(day)
+      const element = document.getElementById("result");
+      console.log(element);
+      element.value = result;
+    }
+  </script>
+
+  <input type="text" placeholder="１日の曜日" id="day">
+  <button type="button" onclick="go()">生成</button>
+  <br>
+  <textarea name="area" rows="36" cols="27" id="result"></textarea>
+</body>
+
+</html>
