@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
   <style type="text/css">
     < !-- body {
       font-size: 18px;
@@ -13,7 +13,8 @@
       font-size: 18px;
     }
 
-    label, input[type='checkbox'] {
+    label,
+    input[type='checkbox'] {
       cursor: pointer;
     }
 
@@ -21,7 +22,7 @@
       width: 80px;
       font-size: 18px;
       cursor: pointer;
-   }
+    }
 
     textarea {
       margin-top: 12px;
@@ -35,33 +36,29 @@
 <body>
   <script type="text/javascript">
     const days = ["月", "火", "水", "木", "金", "土", "日"];
-    const dayStrings = [
-      ["月", "げつ", "Mon", "mon", "getsu", "getu"],
-      ["火", "か", "Tue", "tue", "ka"],
-      ["水", "すい", "Wed", "wed", "sui"],
-      ["木", "もく", "Thu", "thu", "moku"],
-      ["金", "きん", "Fri", "fri", "kin"],
-      ["土", "ど", "Sat", "sat", "do"],
-      ["日", "にち", "Sun", "sun", "nichi", "niti"]];
     const dayIds = ["monday", "tuesday", "wednesday", "thursday", "friday",
-    "saturday", "sunday"];
+      "saturday", "sunday"];
 
-    function getDay(input) {
-      let result = null;
-      dayStrings.forEach(strings => {
-        if (strings.findIndex(d => input.startsWith(d)) >= 0) result = strings[0];
-      });
-      return result;
+    function getFirstDay() {
+      const firstDayElement = document.getElementById("day");
+      const firstDay = firstDayElement.value;
+      return firstDay;
+    }
+
+    function getLastDate() {
+      const lastDateElement = document.getElementById("number_of_days");
+      const lastDay = lastDateElement.value;
+      return lastDay;
     }
 
     function make(day1, schedules, blank) {
       const firstDay = days.findIndex(d => d === day1);
       let i;
       let result = "";
-      for (i = 1; i <= 31; i++) {
+      for (i = 1; i <= getLastDate(); i++) {
         let day = (firstDay + i - 1) % 7;
         result = result + i + "(" + days[day] + ") "
-		       + schedules[day] + "\n";
+          + schedules[day] + "\n";
         if (day === 6 && blank)
           result = result + "\n";
       }
@@ -73,22 +70,46 @@
     }
 
     function go() {
-      const inputDayElement = document.getElementById("day");
-      const inputDay = inputDayElement.value;
-      const day = getDay(inputDay);
+      const day = getFirstDay();
       if (!day) return;
       const schedules = getSchedules();
-      const blank = document.getElementById("week").value === "yes";
+      const blank = document.getElementById("week").checked;
       const result = make(day, schedules, blank);
       const element = document.getElementById("result");
       element.value = result;
     }
+
+    function showLastDay() {
+      const day = getFirstDay();
+      const dayIndex = days.indexOf(day);
+      const lastDateStrings = ["31", "30", "29", "28"];
+      const lastDateElements = lastDateStrings.map(n => document.getElementById(n));
+      const newInnerTexts = lastDateStrings.map(n => `${n}(${days[(n - 1 + dayIndex) % 7]})`);
+      lastDateElements.forEach((e, i) => {
+        e.innerText = newInnerTexts[i];
+      });
+    }
   </script>
 
-  １日の曜日 <input type="text" size="7" id="day" autofocus="focus">
-  <button type="button" onclick="go()">生成</button><br/>
+  <select name="day" id="day" size="7" onchange="showLastDay()">
+    <option value="月" selected>1(月)</option>
+    <option value="火">1(火)</option>
+    <option value="水">1(水)</option>
+    <option value="木">1(木)</option>
+    <option value="金">1(金)</option>
+    <option value="土">1(土)</option>
+    <option value="日">1(日)</option>
+  </select>
+  〜
+  <select name="number_of_days" id="number_of_days" size="4">
+    <option id="31" value="31" selected>31(水)</option>
+    <option id="30" value="30">30(火)</option>
+    <option id="29" value="29">29(月)</option>
+    <option id="28" value="28">28(日)</option>
+  </select>
+  <button type="button" onclick="go()">生成</button><br />
   <label for="week">
-  <input type="checkbox" id="week" value="yes">日曜日と月曜日の間に空行を入れる
+    <input type="checkbox" id="week" value="yes" checked>日曜日と月曜日の間に空行を入れる
   </label>
   <br />
   月 <input type="text" placeholder="月曜の予定" id="monday"><br />
