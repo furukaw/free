@@ -29,6 +29,10 @@
       font-size: 14px;
     }
 
+    .day-date-selector {
+      vertical-align: middle;
+    }
+
     -->
   </style>
 </head>
@@ -89,25 +93,61 @@
         e.innerText = newInnerTexts[i];
       });
     }
+
+    function copy() {
+      const textareaElement = document.getElementById("result");
+      if (execCopy(textareaElement.value)) {
+        alert('コピーできました');
+      }
+      else {
+        alert('このブラウザでは対応していません');
+      }
+    }
+
+    // https://qiita.com/simiraaaa/items/2e7478d72f365aa48356
+    // テキストエリアバージョン
+    function execCopy(string) {
+      var temp = document.createElement('textarea');
+
+      temp.value = string;
+      temp.selectionStart = 0;
+      temp.selectionEnd = temp.value.length;
+
+      var s = temp.style;
+      s.position = 'fixed';
+      s.left = '-100%';
+
+      document.body.appendChild(temp);
+      temp.focus();
+      var result = document.execCommand('copy');
+      temp.blur();
+      document.body.removeChild(temp);
+      // true なら実行できている falseなら失敗か対応していないか
+      return result;
+    }
   </script>
 
-  <select name="day" id="day" size="7" onchange="showLastDay()">
-    <option value="月" selected>1(月)</option>
-    <option value="火">1(火)</option>
-    <option value="水">1(水)</option>
-    <option value="木">1(木)</option>
-    <option value="金">1(金)</option>
-    <option value="土">1(土)</option>
-    <option value="日">1(日)</option>
-  </select>
-  〜
-  <select name="number_of_days" id="number_of_days" size="4">
-    <option id="31" value="31" selected>31(水)</option>
-    <option id="30" value="30">30(火)</option>
-    <option id="29" value="29">29(月)</option>
-    <option id="28" value="28">28(日)</option>
-  </select>
-  <button type="button" onclick="go()">生成</button><br />
+  <div class="day-date-selector">
+    <select name="day" id="day" size="7" onchange="showLastDay()">
+      <option value="月" selected>1(月)</option>
+      <option value="火">1(火)</option>
+      <option value="水">1(水)</option>
+      <option value="木">1(木)</option>
+      <option value="金">1(金)</option>
+      <option value="土">1(土)</option>
+      <option value="日">1(日)</option>
+    </select>
+    〜
+    <select name="number_of_days" id="number_of_days" size="4">
+      <option id="31" value="31" selected>31(水)</option>
+      <option id="30" value="30">30(火)</option>
+      <option id="29" value="29">29(月)</option>
+      <option id="28" value="28">28(日)</option>
+    </select>
+  </div>
+  <button type="button" onclick="go()">生成</button>
+  <button type="button" onclick="copy()">コピー</button>
+  <br />
   <label for="week">
     <input type="checkbox" id="week" value="yes" checked>日曜日と月曜日の間に空行を入れる
   </label>
